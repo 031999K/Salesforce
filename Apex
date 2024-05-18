@@ -1,0 +1,8 @@
+Hello to print hello world from Apex class.
+public class HelloWorld {
+public static void.Hello(){
+system.debug('hello universe')
+  }
+}
+Then go to Debbug > click on open execute annonamus window ( ctrl+E) > Mention file name and funtion name like the below.
+HelloWorld.hellooo();
