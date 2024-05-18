@@ -1,0 +1,35 @@
+Q. How to pass parameter to an apex method and Apex method with return type.
+here we will pass parameter from annonamous window.
+
+public class AnnoPara {
+    public static void param(string name){
+        system.debug('hi how are you' + name);
+    }   
+    public static void param2(Integer age){
+        system.debug('your are is ' + age + 'year old girl !!!!');
+    }
+}
+
+
+
+public class AnnoPara {
+    public static void param(string name){
+        system.debug('hi how are you' + name);
+    }
+    public static void division(Integer a , Integer b){
+        Integer c = a/b ; 
+        system.debug('the divisio of a & b is' + c);
+    }
+ }
+
+
+
+Now we are talking about return type
+
+
+public class AnnoPara {
+    public static String name(){ // if we are mention here string.
+        system.debug('khusbu');
+        return 'khusbu';  // then we need to pass string in return.
+    }
+ }
