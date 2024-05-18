@@ -1,0 +1,31 @@
+Q. Write a simple calculater program by using Apex call , where we can create 4 function for performing add , sub , mul and div.
+public class CalculatorClass {
+    public static void add(){
+        Integer a = 10, b = 20;
+        Integer sum = a+b;
+        system.debug('Addition of a and b is ' + sum);
+    }
+    public static void subb(){
+        Integer a = 50, b = 20;
+        Integer sub = a-b;
+        system.debug('sub of a & b is ' + sub);
+    }
+    public static void multiplication(){
+        Integer a = 5 , b = 2;
+        Integer mul = a*b;
+        system.debug('multiplication of a and b is ' + mul);
+    }
+    public static void division(){
+        Integer a = 100 , b = 5;
+        Integer div = a/b;
+        system.debug('div of a and b is ' + div);
+    }
+}
+
+
+
+In debug we need to mention.
+CalculatorClass.add();
+CalculatorClass.subb();
+CalculatorClass.multiplication();
+CalculatorClass.multiplication();
