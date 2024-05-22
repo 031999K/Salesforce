@@ -1,0 +1,14 @@
+here we can update child record by parent record.
+whenever we want to go with any updated related record that time we should use After trigger event
+Whenever Account's Phone field is updated then all related contact's phone field should also get updated with parent Account's Phone.
+here we will use context variable.
+isAfter , old , oldMap
+isAfter: It return true if trigger was fired after record get saved to data base.(after insert or after delete)
+old:
+It returns list of old version of sObject records , This Sobject list of trigger.old only available in update and delete trigger.
+oldMap:
+It return a Map of the old version of the sObject record. This Sobject list of trigger.old only available in update and delete trigger.
+
+
+
+
