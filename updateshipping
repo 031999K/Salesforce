@@ -1,0 +1,34 @@
+when an account is inserted or updated then account Billing address should automatically populate into account shipping address .(|| OR operator)
+
+trigger TestAccount on Account (before insert , before Update) 
+{
+    if(trigger.isBefore &&(trigger.isInsert || trigger.isUpdate))
+    {
+     	if(!trigger.new.isEmpty())
+        {
+            for(Account acc : trigger.new)
+            {
+                if(acc.BillingStreet != null)
+                {
+                    acc.ShippingStreet = acc.BillingStreet;
+                }
+                if(acc.BillingCity != null)
+                {
+                    acc.ShippingCity = acc.BillingCity;
+                }
+                if(acc.BillingState !=null)
+                {
+                    acc.ShippingState = acc.BillingState;
+                }
+                if(acc.BillingPostalCode !=null)
+                {
+                    acc.ShippingPostalCode = acc.BillingPostalCode;
+                }
+                if(acc.BillingCountry != null)
+                {
+                    acc.ShippingCountry = acc.BillingCountry;
+                }
+            }
+        }
+    }
+}
