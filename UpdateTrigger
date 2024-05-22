@@ -10,5 +10,3 @@ oldMap:
 It return a Map of the old version of the sObject record. This Sobject list of trigger.old only available in update and delete trigger.
 
 
-
-
