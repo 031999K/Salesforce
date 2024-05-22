@@ -4,7 +4,7 @@ trigger TestAccount on Account (before insert , before Update)
 {
     if(trigger.isBefore &&(trigger.isInsert || trigger.isUpdate))
     {
-     	if(!trigger.new.isEmpty())
+     	if(!trigger.new.isEmpty())      //null check
         {
             for(Account acc : trigger.new)
             {
