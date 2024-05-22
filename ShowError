@@ -1,0 +1,21 @@
+while inserting an account if a user left the phone field empty then error should come stating "you can not left the phone field empty".
+
+trigger TestError on Account (before insert) 
+{
+    if(trigger.isBefore && trigger.isInsert)
+    {
+        if(!trigger.new.isEmpty())
+        {
+            for(Account acc : trigger.new)
+            {
+                if(acc.Phone == null)
+                {
+                    acc.Phone.addError('you accot insert account with phone field empty');
+                }
+            }
+        }
+    }
+
+}
+
+
