@@ -10,3 +10,38 @@ oldMap:
 It return a Map of the old version of the sObject record. This Sobject list of trigger.old only available in update and delete trigger.
 
 
+
+
+trigger AfterTrigger on Account (after update)
+{
+    Map<Id,Account> accMap = new Map<Id,Account>();
+    if(trigger.isAfter && trigger.isUpdate)
+    {
+        if(!trigger.new.isEmpty())
+        {
+            for(Account acc : trigger.new)
+            {
+                if(trigger.oldMap.get(acc.id).Phone !=acc.Phone) //if the value entered by user in form field is not equal to the existing form field value for that we will use oldMap because we want to check old value of record
+                {
+                    accMap.put(acc.Id,acc);
+                }
+                
+            }
+        }
+    }
+    List<Contact> conList = [Select Id , AccountId , Phone from Contact where AccountId IN : accMap.keySet()]; // this keyset method return all account ID 
+    List<Contact> listToUpdateContacts = new List<Contact>();   // DML operation
+    if(!conList.isEmpty())
+    {
+        for(Contact con : conList)
+        {
+            con.Phone = accMap.get(con.AccountId).Phone;
+            listToUpdateContacts.add(con);
+        }
+    }
+    if(!listToUpdateContacts.isEmpty())
+    {
+        update listToUpdateContacts;
+    }
+}
+
