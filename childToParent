@@ -1,0 +1,45 @@
+whenever a contacts description is updated then it's parent account description also get updated by it
+
+
+
+
+
+
+
+
+trigger afterTrigger on Contact (after update)
+{
+    Set<Id> accIds = new Set<Id>();   // after fetching parent account id we will store it in set
+    if(trigger.isAfter && trigger.isUpdate)
+    {
+        if(!trigger.new.isEmpty())
+        {
+            for(Contact con : trigger.new)
+            {
+                if(con.AccountId !=null && trigger.oldMap.get(con.Id).Description != con.Description)
+                {
+                    accIds.add(con.AccountId); // add account id in that set
+                }
+            }
+        }
+    }
+    if(!accIds.isEmpty())
+    {
+        Map<Id,Account> accMap = new Map<Id,Account>([Select Id,Description from Account where Id IN : accIds]); // we are using map here , because using map is an easy way to avoide SOQL query inside for loop
+  List <Account> listTobeUpdated = new List<Account>();
+    if(!trigger.new.isEmpty())
+    {
+        for(Contact cont : trigger.new)
+        {
+            Account acc =accMap.get(cont.AccountId);
+            acc.Description = cont.Description;
+            listTobeUpdated.add(acc);  
+        }
+    }
+    if(!listTobeUpdated.isEmpty())
+    {
+        update listTobeUpdated;
+    } 
+    }
+ 
+}
