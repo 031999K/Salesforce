@@ -1,7 +1,7 @@
 Trigger to Create a related Contact of Account with same phone as Account Phone if custom checkbox field on Account is Checked.
 we have checkbox custom object on the Account object now the requirement is on updation or insersation of a account record , if the user check the check box then the related contact should be created on the account with same phone as account phone.
 agar checkbox check rahega to related account create hoga same phone number k saath (ye insert and update k liea work karega)
-
+isme bhi ek custom checkbox banana hoga account object k ander
 trigger CheckboxContent on Account (after Insert , after Update) 
 {
     List<Contact> listToInsertCon = new List<Contact>();
