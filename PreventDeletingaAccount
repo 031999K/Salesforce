@@ -1,1 +1,20 @@
+Prevent a user from deleting an Active Account.
+iske liea hame ek custom checkbox banan hoga Account object mai .
+and iske liea ham before delete use karange.
 
+trigger PrevenDelete on Account (before delete) 
+{
+    if(trigger.isBefore && trigger.isDelete)
+    {
+        if(!trigger.old.isEmpty())
+        {
+            for(Account acc : trigger.old)
+            {
+                if(acc.Active_Account_C__c == true)
+                {
+                    acc.addError('you can not delete an Active Account');
+                }
+            }
+        }
+    }
+}
