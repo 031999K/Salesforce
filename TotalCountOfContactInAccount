@@ -1,1 +1,49 @@
+Update a field on Account custom object to show number of associate contacts and automatically update the field
 
+for this we need to create a custom object under account.
+
+
+
+//trigger.new give us new Id --insert , update , undelete se hame new id mill jata hai but trigger.delete we don't have that id so in this case we will use trigger.old because id will be there on trigger.old
+
+
+
+apex class code 
+contactCounterController
+public class contactCounterController {	
+    public static void contactCounter(List<Contact> contacts)   //Method of counting the number of contacts
+    {
+        Set<Id>accounIds = new Set<Id>();   // store Ids associate with contacts
+        for(Contact cont : contacts)
+        {
+           accounIds.add(cont.AccountId);
+        }
+        List<Account> accList = [Select Id , Number_of_Contacts__c,(Select id from Contacts)from Account where Id In : accounIds];
+        List<Account> accUpdateList = new List<Account>();
+        for(Account acc: accList)
+        {
+            acc.Number_of_Contacts__c=acc.Contacts.size();
+            accUpdateList.add(acc);
+        }
+        update accUpdateList;
+    }
+}
+
+
+
+Apex trigger code 
+countContactTrigger
+trigger countContactTrigger on Contact (after insert , after update , after delete , after undelete) 
+{
+    if(trigger.isAfter)
+    {
+        if(trigger.isInsert || trigger.isUpdate || trigger.isUndelete)
+        {
+            contactCounterController.contactCounter(trigger.new);
+        }
+        if(trigger.isUpdate || trigger.isDelete)
+        {
+            contactCounterController.contactCounter(trigger.old);
+        }
+    }
+}
