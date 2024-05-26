@@ -1,6 +1,6 @@
 Update a field on Account custom object to show number of associate contacts and automatically update the field
 
-for this we need to create a custom object under account.
+for this we need to create a custom object(data type number) under account.
 
 
 
