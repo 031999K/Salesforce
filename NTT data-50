@@ -1,0 +1,52 @@
+Write a Apex trigger to create contacts based on number of entered by the user in Number of contact while creating an account.
+
+
+Sobject is Contact , handler is After insert
+
+apex class:
+public class TriggerHandler {
+    public static void trgMethod(List<Account>newAccList)
+    {
+        List<Contact> listToInsertCon = new List<Contact>();  //List to store contact record
+        if(!newAccList.isEmpty())
+        {
+            for(Account acc:newAccList)
+            {
+                if(acc.Number_of_Contacts__c !=null  && acc.Number_of_Contacts__c <=10)
+                {
+                    for(Integer n = 1; n<=acc.Number_of_Contacts__c;n++)
+                    {
+                        Contact con = new Contact();
+                        con.FirstName = 'soni';
+                        con.LastName = 'Contact' +n;
+                        con.AccountId = acc.Id;
+                        listToInsertCon.add(con);
+                    }
+                }
+                else
+                {
+                    acc.addError('Maximum number of contacts allowed for this account is 10');
+                }
+            }
+            if(!listToInsertCon.isEmpty())
+            {
+                insert listToInsertCon;
+            }
+        }
+    }
+
+}
+
+
+Apex trigger:
+trigger NttDatatrigger on Account (after insert) 
+{
+    if(trigger.isAfter && trigger.isInsert)
+    {
+        TriggerHandler.trgMethod(trigger.new);
+    }
+}
+
+
+
+
