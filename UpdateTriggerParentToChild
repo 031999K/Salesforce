@@ -45,3 +45,51 @@ trigger AfterTrigger on Account (after update)
     }
 }
 
+
+
+
+we can use this code also for parent to child
+
+trigger parentToChildPhone on Account (after update)
+{
+	Map<Id, Account> accMap = new Map<Id, Account>();
+    if(trigger.isAfter && trigger.isUpdate)
+    {
+        if(!trigger.new.isEmpty())
+        {
+            for(Account acc : trigger.new)
+            {
+                if(acc.phone != null && trigger.oldMap.get(acc.id).Phone !=acc.Phone)
+                {
+                   accMap.put(acc.Id,acc);
+                }
+            }
+        }
+    }
+        List<Contact> accList = [Select Id , AccountId , Phone from Contact where AccountId IN:accMap.KeySet()];
+        List<Contact> updateToContact = new List<Contact>();
+    if(!accList.isEmpty())
+    {
+        for(Contact con : accList)
+       {
+          con.Phone = accMap.get(con.AccountId).Phone;
+            updateToContact.add(con);
+        }
+    if(!updateToContact.isEmpty())
+    {
+        update updateToContact;
+    }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
