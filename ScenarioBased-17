@@ -1,0 +1,81 @@
+Enforce single primary contact on Account 
+
+yaha hame ek custom object checkbox banana hai contact objet mai (Primary_Contact__c) 
+yaha ye perform krna hai ki agar ye checbox checked rahega then wo contact primary hoga if ye check nhi rahega to contact primary nhi hoga 
+toh only one primary contact should be present on an account.
+when user trying to add more then one primary contact where by insertion or updation that case it should show error message.
+like we don't have more then one primary contact in account
+
+
+Apex class
+
+public class helperTriggers 
+{
+    public static void tryMethod(List<Contact> conList,Map<Id,Contact> oldMap)
+    {
+        Set<Id> parentIds = new Set<Id>();
+        Map<Id,Integer> conMap = new Map<Id,Integer>();
+        
+        if(!conList.isEmpty())
+        {
+            for(Contact con :conList)
+            {
+                if(oldMap !=null)
+                {
+                    Contact oldCon = oldMap.get(con.Id);
+                    
+                    if(oldCon.AccountId !=con.AccountId)
+                    {
+                        parentIds.add(oldCon.AccountId);
+                        parentIds.add(con.AccountId);
+                    }
+                    else
+                    {
+                      parentIds.add(oldCon.AccountId);  
+                    }
+                }
+                else
+                {
+                    parentIds.add(con.AccountId);
+                }
+            }
+            
+            if(!parentIds.isEmpty())
+            {
+                List<Contact> contactList = [Select Id,AccountId,Primary_Contact__c from Contact where AccountId IN :parentIds and Primary_Contact__c =true];
+                
+                if(!contactList.isEmpty())
+                {
+                    for(Contact objCon : contactList)
+                    {
+                        conMap.put(objCon.AccountId,contactList.size());
+                    }
+                    for(Contact errorCon : conList)
+                    {
+                        if(errorCon.Primary_Contact__c == true && conMap.containsKey(errorCon.AccountId) && conMap.get(errorCon.AccountId) > 0)
+                        {
+                            errorCon.addError('This account cannot have more then one primary contact');
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+apex trigger on contact before insert before update
+
+trigger PrimTrigger on Contact (before insert , before Update) 
+{
+    if(trigger.isBefore && trigger.isUpdate)
+    {
+        helperTriggers.tryMethod(trigger.new , trigger.oldMap);
+    }
+    
+    else if(trigger.isBefore && trigger.isInsert)
+    {
+       helperTriggers.tryMethod(trigger.new ,null);
+    }
+}
