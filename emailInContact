@@ -1,0 +1,32 @@
+hamare contact object mai Department mai agar CSE dalte hai toh contact object k email field mai ek email save ho jaiga.
+
+
+Contact object whenever department equal to CSE it automaticaly insert the email field .
+
+handler class 
+
+public class ContactTriggerHandler 
+{
+    public static void setContactEmail(List<Contact> Contacts) //ham iterate krne k liea for loop chalate hai
+    {
+        for(Contact con : Contacts)
+        {
+            if(con.Department == 'CSE')
+            {
+                con.Email = 'CSE@COMPANY.COM';  // set email address as desire
+            }
+        }
+    }
+}
+
+
+Apex trigger
+
+trigger ContactTrigger on Contact (before insert) 
+{
+    If(trigger.isBefore && trigger.isInsert)
+    {
+        	ContactTriggerHandler.setContactEmail(Trigger.new);
+    }
+
+}
