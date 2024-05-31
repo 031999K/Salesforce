@@ -1,0 +1,17 @@
+Whenever an Account is created opportunity should also created.
+
+
+trigger AccountToOpportunity on Account (after insert)
+{
+	List<Opportunity> newOpps = new List<Opportunity>();
+    for(Account acc : trigger.new)
+    {
+        Opportunity opp = new Opportunity();  //Create a new opportunity for the account
+        opp.Name = 'New Opportunity';
+        opp.StageName = 'prospecting';
+        opp.CloseDate = Date.today().addDays(30);
+        opp.AccountId = acc.Id;
+		newOpps.add(opp);        
+    }
+    insert newOpps;
+}
