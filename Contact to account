@@ -1,0 +1,29 @@
+
+Jab bhi ham contact object mai ek account bananiange to Account object mai ek account banana hoga with same name.
+
+
+trigger ContactToAccount on Contact (before insert) 
+{
+	List<Contact> newContacts = new List<Contact>();
+    for(Contact con :trigger.new)
+    {
+        if(con.AccountId == null)
+        {
+           newContacts.add(con); 
+        }
+    }
+    if(!newContacts.isEmpty())
+    {
+        List<Account> newAccounts = new List<Account>();
+        for(Contact con :newContacts)
+        {
+            newAccounts.add(new Account (Name = con.LastName , Phone = con.Phone));
+        }
+        insert newAccounts;
+        for(Integer i =0; i<newContacts.size(); i++)
+        {
+            newContacts[i].AccountId = newAccounts[i].Id;
+        }
+    }
+}
+
