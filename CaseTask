@@ -1,0 +1,54 @@
+Case trigger.
+
+hame ek trigger likhna hai  jisme agar case object me ek account banate hai and uske Case Origin mai Email selecet krte hai toh ek related ek task create hoga jiska subject call hoga.
+
+
+isme ek hendler and trigger likhna hai case pe after insert pe
+
+trigger handler:
+
+
+public class UpdateEmailcase 
+{
+    public static void CreatTask(List<Case> csLst)
+    {
+        
+        List<Task> tkLst = new List<Task>();
+        for(Case cs : csLst)
+        {
+            If(cs.origin == 'Email')
+            {
+                Task tsk = new Task();
+                tsk.WhatId = cs.Id;
+                tsk.WhoId = cs.ContactId;
+                tsk.OwnerId = cs.OwnerId;
+                tsk.Subject = 'call';
+                tkLst.add(tsk);
+            }
+        }
+        
+        if(tkLst.size() > 0)
+        {
+            try{
+                insert tkLst;
+            }
+            catch(exception e)
+            {
+                system.debug('Error Message -' + e.getMessage());
+                system.debug('Error Line Number -' + e.getLineNumber());
+            }
+        }
+    }
+}
+
+
+
+trigger:
+
+trigger CaseTrigger on Case (after insert) 
+{
+    if(trigger.isAfter && trigger.isInsert)
+    {
+        UpdateEmailcase.CreatTask(trigger.new);
+    }
+}
