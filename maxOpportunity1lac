@@ -1,0 +1,42 @@
+Hame ek trigger likhna hai hamare pass ek account mai user hai toh uss user k pass max 1 lac amount ka related opportunity ho sakta hai agar amount jyada hua toh error aaiga.
+
+
+
+
+
+trigger OpportunityTrigger on Opportunity (before insert) 
+{
+    Set<Id> acIdSet = new Set<Id>();  //set to store account id
+    for(Opportunity opp : trigger.new)
+    {
+        if(opp.AccountId != null)
+        {
+            acIdSet.add(opp.AccountId);
+        }
+    }
+    system.debug('acIdSet size+++' +acIdSet.size());
+    if(acIdSet.size()>0)
+    {
+        //aggregate query to sum the ammount of opportunity
+        for(AggregateResult aggr : [select SUM(Amount) totalsum , AccountId from Opportunity where AccountId IN : acIdSet group by AccountId])
+        {
+            Decimal totalOpportunityAmount = (Decimal)aggr.get('totalsum');
+            system.debug('totalOpportunityAmount++' + totalOpportunityAmount);
+            
+            Id accId = (Id)aggr.get('AccountId');
+            system.debug('AccountId++' +accId);
+            
+            if(totalOpportunityAmount >=100000)
+            {
+                for(Opportunity op : trigger.new)
+                {
+                    if(op.AccountId == accId)
+                    {
+                        op.Amount.addError('Total amount of Opportunity for this account is 1 lac already .you can nt insert more opportunity.');
+                    }
+                }
+            }
+        }
+        
+    }
+}
