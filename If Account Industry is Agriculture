@@ -1,0 +1,36 @@
+Create two contact if Account Industry is Agriculture
+
+
+yeha ham custom lable banana sikhange.
+custom lable ko defined krne k liea system.label use krte hai
+
+Yaha ham 2 custom field banaange
+NumberOffContacts
+Industry
+
+
+trigger cerateContactAccount on Account (after insert , after update) 
+{
+	List<Contact> conList = new List<Contact>();
+    string MyIndustr = system.Label.Industry;
+    List<string> splitIndustry = MyIndustr.split(',');
+    try{
+    for(Account ac : trigger.new)
+    {
+        if(splitIndustry.Contains(ac.Industry))
+        {
+            for(Integer i = 1 ; i<=Integer.Valueof(system.label.NumberOffContacts); i++)
+            {
+                Contact con = new Contact ();
+                con.LastName = 'Test' + i;
+                con.AccountId = ac.id;
+                conList.add(con);
+            }
+        }
+    }
+        Insert conList;
+    }catch(Exception e)
+    {
+        system.debug(e.getMessage());
+    }
+ }
