@@ -39,3 +39,38 @@ trigger DuplicatePrevent on Account (before insert , before update)
     }
 }      
 
+
+
+
+or we can use this code also
+
+
+
+trigger DuplicationPrevent on Account (before insert ,before update) 
+{
+	Set<String> accSet = new Set<String>();
+    for(Account acc : trigger.new)
+    {
+        accSet.add(acc.Name);
+    }
+    
+    List<Account> accList = [Select id ,Name from Account where Name IN : accSet];
+    Map<String,Account> accMap = new Map<String,Account>();
+    if(!accList.isEmpty())
+    {
+        for(Account acc :accList)
+        {
+           accMap.put(acc.Name , acc);
+        }
+    }
+    if(!trigger.new.isEmpty())
+    {
+        for(Account acct : trigger.new)
+        {
+            if(accMap.containsKey(acct.Name))
+            {
+                acct.addError('you cant not use same name to create & update an account');
+            }
+        }
+    }
+}
