@@ -1,7 +1,7 @@
 Write a Apex trigger to create contacts based on number of entered by the user in Number of contact while creating an account.
 
 
-Sobject is Contact , handler is After insert
+Sobject is Account , handler is After insert
 
 apex class:
 public class TriggerHandler {
