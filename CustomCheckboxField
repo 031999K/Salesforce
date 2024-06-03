@@ -30,3 +30,30 @@ trigger CheckboxContent on Account (after Insert , after Update)
 
 }
 
+
+
+
+
+
+
+{
+	List<Contact> updateCont = new List<Contact>();
+    for(Account acc : trigger.new)
+    {
+        if(acc.Create_Contact__c &&(trigger.isInsert || acc.Create_Contact__c != trigger.oldMap.get(acc.id).Create_Contact__c))
+        
+        {
+            Contact con = new Contact();
+            con.FirstName = 'TestAccount';
+            con.LastName = acc.Name;
+            con.Phone = acc.Phone;
+            con.AccountId = acc.Id;
+            updateCont.add(con);
+        }
+    }
+    if(!updateCont.isEmpty())
+    {
+        Insert updateCont;
+    }
+}
+
