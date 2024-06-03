@@ -31,10 +31,9 @@ trigger CheckboxContent on Account (after Insert , after Update)
 }
 
 
+or we can use this code also
 
-
-
-
+trigger CheckboxAccount on Account (after insert ,after update) 
 
 {
 	List<Contact> updateCont = new List<Contact>();
