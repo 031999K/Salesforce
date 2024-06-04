@@ -1,0 +1,33 @@
+write a trigger to prevent a user from deleting an account record if it has related opportunity record.
+
+Sobject -- account
+Data --- trigger.oldMap
+DML event -- before delete
+
+
+apex class:
+
+public class PreventDeleteAcc 
+{
+    public static void notToDelete(map<Id,Account> oldAccount)
+    {
+        List<id> accList = new List<id>(oldAccount.keyset());
+        List<Opportunity> relateOpp = [Select id from Opportunity where AccountId IN :accList];
+        if(!relateOpp.isEmpty())
+        {
+            for(id accId :accList)
+            {
+                Account acc = oldAccount.get(accId);
+                acc.addError('if related opportunity is present then you are not allowed to delete account');
+            }
+        }
+    }
+}
+
+
+apex trigger:
+
+trigger PreDel on Account (before delete) 
+{
+	PreventDeleteAcc.notToDelete(trigger.oldMap);
+}
