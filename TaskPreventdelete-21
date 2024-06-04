@@ -1,0 +1,30 @@
+write a trigger that prevent the creation of task recorrd if the due date is in past date.
+
+sObject--Task
+dml event --- before Insert
+Data -- trigger.new
+
+
+class
+
+public class TaskPastDate 
+{
+    public static void preventPastTask(List<Task> newTask)
+    {
+        for(Task tsk : newTask)
+        {
+            if(tsk.ActivityDate < Date.Today())
+            {
+                tsk.addError('Date can not be the past date , it should current date');
+            }
+        }
+    }
+}
+
+
+trigger
+
+trigger preventTaskDel on Task (before insert) 
+{
+	TaskPastDate.preventPastTask(trigger.new);
+}
