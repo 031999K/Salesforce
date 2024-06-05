@@ -40,3 +40,54 @@ trigger OpportunityTrigger on Opportunity (before insert)
         
     }
 }
+
+
+
+
+2nd method from class and trigger
+
+class:
+public class MaxOppTu 
+{
+	public static void MaxOpportunity(List<Opportunity> OppList)
+    {   
+    Set<Id> acIdSet = new Set<Id>();  //set to store account id
+    for(Opportunity opp : OppList)
+    {
+        if(opp.AccountId != null)
+        {
+            acIdSet.add(opp.AccountId);
+        }
+    }
+    if(acIdSet.size()>0)
+    {
+        //aggregate query to sum the ammount of opportunity
+        for(AggregateResult aggr : [select SUM(Amount) totalsum , AccountId from Opportunity where AccountId IN : acIdSet group by AccountId])
+        {
+            Decimal totalOpportunityAmount = (Decimal)aggr.get('totalsum');
+            
+            Id accId = (Id)aggr.get('AccountId');
+            
+            if(totalOpportunityAmount >=100000)
+            {
+                for(Opportunity op : OppList)
+                {
+                    if(op.AccountId == accId)
+                    {
+                        op.Amount.addError('Total amount of Opportunity for this account is 1 lac already .you can nt insert more opportunity dear Khusbu!!.');
+                    }
+                }
+            }
+        }
+        
+    }
+}
+}
+
+
+trigger:
+
+trigger MaxOppTrigger on Opportunity (before insert) 
+{
+	MaxOppTu.MaxOpportunity(trigger.new);
+}
