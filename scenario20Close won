@@ -1,0 +1,28 @@
+write a trigger on account when account Active field is updated from 'yes' to 'no' then check all opportunities associated with the account all opportunity stag to close lost if the stage is not equal to close won.
+
+
+Sobject---Account
+DML-EVENT --- after Update
+
+
+trigger ActiveToYes on Account (after update)
+{
+	set<Id> accId = new Set<Id>();
+    List<Opportunity> oppListToUpdate = new List<Opportunity>();
+    for(Account acc : trigger.new)
+    {
+        if(acc.Active__c != trigger.oldMap.get(acc.Id).Active__c && acc.Active__c == 'No')
+        {
+            accId.add(acc.Id);
+        }
+    }
+    for(Opportunity opp : [Select id, AccountId ,StageName from opportunity where AccountId IN : accId AND StageName != 'Closed Won'])
+    {
+        opp.StageName = 'Close Lost';
+        oppListToUpdate.add(opp);
+    }
+    if(!oppListToUpdate.isEmpty())
+    {
+        update oppListToUpdate;
+    }
+}
