@@ -74,3 +74,49 @@ trigger DuplicationPrevent on Account (before insert ,before update)
         }
     }
 }
+
+
+
+
+This is from handler and trigger:
+
+
+public class NamePrevent 
+{
+	public static void NameDeplicate(List<Account> accName)
+    {
+	Set<String> accSet = new Set<String>();
+    for(Account acc : accName)
+    {
+        accSet.add(acc.Name);
+    }
+    
+    List<Account> accList = [Select id ,Name from Account where Name IN : accSet];
+    Map<String,Account> accMap = new Map<String,Account>();
+    if(!accList.isEmpty())
+    {
+        for(Account acc :accList)
+        {
+           accMap.put(acc.Name , acc);
+        }
+    }
+    if(!accName.isEmpty())
+    {
+        for(Account acct : accName)
+        {
+            if(accMap.containsKey(acct.Name))
+            {
+                acct.addError('you cant not use same name to create & update an account KHUSBU');
+            }
+        }
+    }
+}
+}
+
+
+trigger
+
+trigger duplicateP on Account (before insert ,before update)
+{
+	NamePrevent.NameDeplicate(trigger.new);
+}
