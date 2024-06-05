@@ -1,0 +1,16 @@
+write a trigger on Account , if a user triesto delete an account but that account is associated with any contact , it would not allow to delete account.
+
+Sobject--- Account
+DML event -- before delete
+
+
+
+
+
+trigger PreventToDeleteA on Account (before delete) 
+{
+    for(Account acc : [Select Id from Account where Id IN (Select AccountId from Contact) and ID IN :trigger.old])
+    {
+        trigger.oldMap.get(acc.Id).addError('You can not allow to delete this account because you have associate contact');
+    }
+}
