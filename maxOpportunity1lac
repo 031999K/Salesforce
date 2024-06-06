@@ -87,7 +87,7 @@ public class MaxOppTu
 
 trigger:
 
-trigger MaxOppTrigger on Opportunity (before insert) 
+trigger MaxOppTrigger on Opportunity (before insert ,before update) 
 {
 	MaxOppTu.MaxOpportunity(trigger.new);
 }
