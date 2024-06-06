@@ -22,7 +22,7 @@ public class ContactTriggerHandler
 
 Apex trigger
 
-trigger ContactTrigger on Contact (before insert) 
+trigger ContactTrigger on Contact (before insert before update) 
 {
     If(trigger.isBefore && trigger.isInsert)
     {
