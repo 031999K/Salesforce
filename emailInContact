@@ -15,6 +15,9 @@ public class ContactTriggerHandler
             {
                 con.Email = 'CSE@COMPANY.COM';  // set email address as desire
             }
+           else
+        {
+          acc.Emails__c = '';
         }
     }
 }
