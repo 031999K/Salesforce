@@ -1,0 +1,15 @@
+Ristrict user from changing naame once a record is created , throw error 'Account Name cannot modified once created'
+
+public class RestrictAcc
+{
+  Public static void RestrictNameChange(List<Account> accList , Map<Id,Account> oldMap)
+  {
+    for(Account acc :accList)
+    {
+      if(acc.Name !=oldMap.get(acc.Id).Name)
+         {
+           acc.Name.addError('Account Name can not be modified once created');
+         }
+    }
+  }
+}
