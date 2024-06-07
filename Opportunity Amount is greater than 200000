@@ -1,0 +1,36 @@
+
+
+/*
+1. ### Using Query to fetch Parent Record (Account) as List ###
+*/
+
+
+// when the Opportunity Amount is greater than 200000 
+// update the Opportunity Description with Account Industry
+trigger UpdateOpportunityDescription on Opportunity (before insert, before update) {
+    
+    Set <Id> AccountIds = new Set <Id>();
+    
+    for (Opportunity opp : Trigger.new) {
+        if(opp.AccountId != NULL && opp.Amount > 200000) {
+            AccountIds.add(opp.AccountId);
+        }
+    }    
+  
+    // using List
+    List<Account> accList = [SELECT Id, Industry FROM Account WHERE Id IN : AccountIds];
+    
+    
+    Map<Id,Account> accMap = new Map<Id,Account>(); 
+    for(Account acc : accList) { //  enter the list details in acc
+        accMap.put(acc.Id, acc); //  enter account id in map
+    }
+    
+    
+    for(Opportunity opp : Trigger.new) {   
+        if(opp.AccountId != NULL && opp.Amount > 200000) {
+            opp.Description = opp.Description + ' Account Industry: ' + accMap.get(opp.AccountId).Industry;  // Industry field 
+        }        
+    }    
+    
+}
