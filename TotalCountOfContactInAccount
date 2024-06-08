@@ -47,3 +47,33 @@ trigger countContactTrigger on Contact (after insert , after update , after dele
         }
     }
 }
+
+
+with aggregate function.
+
+trigger contactCountTrigger on Contact (after insert, after update, after delete) {
+     List<String> accountIds = new List<String>();
+    if(Trigger.isInsert || Trigger.isUpdate){
+        for(Contact opp: Trigger.new){
+            accountIds.add(opp.AccountId);
+        }
+    }
+    if(Trigger.isDelete){
+        for(Contact opp: Trigger.old){
+            accountIds.add(opp.AccountId);
+        }
+    }
+  
+    List<AggregateResult> aggResult = [SELECT AccountId , Count(Id) countcon
+                                FROM Contact
+                                WHERE AccountId IN : accountIds
+                                GROUP BY AccountId]; 
+    List<Account> accountToUpdate = new List<Account>();
+    for(AggregateResult agg: aggResult){
+        Account acc = new Account();
+        acc.Id = (Id)agg.get('AccountId');
+        acc.Number_of_Contact__c = (Decimal)agg.get('countcon');
+        accountToUpdate.add(acc);
+    }
+    update accountToUpdate;
+}
