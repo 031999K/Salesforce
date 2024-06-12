@@ -1,0 +1,27 @@
+dml
+
+public class CreateAccountAndUser
+{
+	
+    public static void createAccount()
+    {
+        Account acc = new Account();  //create instance
+        acc.Name = 'Salesforce Khusbu';
+        insert acc;
+        createUser();
+    }
+    @future
+    public static void createUser()
+    {
+        List<Profile> proo = [Select Id, name from profile where name = 'Salesforce Platform User'];  //proile get karange
+        List<UserRole> usRole = [select Id, name from UserRole where name = 'CEO'];   //USER ROLE GET KARANGE
+        user uss = new User();  //instance creation for user
+        uss.FirstName = 'Salesforce';
+        uss.LastName = 'Khusbu';
+        uss.ProfileId = proo[0].id;
+        uss.UserRoleId = usRole[0].id;
+        uss.Email = 'shawkhusbu03@gmail.com';
+        uss.Username = 'shawkhusbu03@gmail.com';
+        insert uss;
+    }
+}
