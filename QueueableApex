@@ -1,0 +1,19 @@
+Update the all contact leadSource to won
+public class QueueableApex implements Queueable
+{
+    Public void execute(QueueableContext context)
+    {
+       List<Contact> conList = [Select Id,LeadSource from Contact];
+        for(Contact con : conList)
+        {
+            con.LeadSource = 'Won';
+        }
+        update conList;
+    }
+}
+
+
+annonomus window
+
+QueueableApex con = new QueueableApex();
+Id jobId = System.enqueueJob(con);
