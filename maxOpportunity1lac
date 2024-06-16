@@ -15,7 +15,7 @@ trigger OpportunityTrigger on Opportunity (before insert)
         }
     }
     system.debug('acIdSet size+++' +acIdSet.size());
-    if(acIdSet.size()>0)
+    if(acIdSet.isEmpty())
     {
         //aggregate query to sum the ammount of opportunity
         for(AggregateResult aggr : [select SUM(Amount) totalsum , AccountId from Opportunity where AccountId IN : acIdSet group by AccountId])
