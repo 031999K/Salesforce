@@ -27,3 +27,40 @@ trigger OpportunityManager on Opportunity (after insert, after update, after del
     }
     update accountToUpdate;
 }
+
+
+
+2nd method
+
+
+trigger MaxMinOppAcc on Opportunity (after insert, after update,after delete)
+{
+    List<String> accSt = new List<String>();
+    List<Account> updateAcc = new List<Account>();
+    if(trigger.isInsert || trigger.isUpdate)
+    {
+        for(Opportunity opp : trigger.new)
+        {
+            accSt.add(opp.AccountId);
+        }
+    }
+    if(trigger.isDelete)
+    {
+      for(Opportunity opp : trigger.old)
+        {
+            accSt.add(opp.AccountId);
+        }  
+    }
+    for(AggregateResult aggr : [Select AccountId ,SUM(Amount)sumam from Opportunity where AccountId IN:accSt GROUP by AccountId])
+    {
+        Account acc = new Account();
+        acc.Id =(string)aggr.get('AccountId');
+        acc.Total_Amount__c =(Decimal)aggr.get('sumam');
+        updateAcc.add(acc);
+    }
+    if(!updateAcc.isEmpty())
+    {
+        update updateAcc;
+    }
+    
+} 
