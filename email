@@ -1,0 +1,4 @@
+write a trigger to send an welcome email when an contact is inseted and if the email is null do not send it.
+
+
+sobject Contact
